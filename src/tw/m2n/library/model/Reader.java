@@ -1,16 +1,21 @@
 package tw.m2n.library.model;
+
+import tw.m2n.library.Library;
+
 /**
  * @author moon
  *
  */
-public class Reader {
+public class Reader implements Runnable {
 
+    private Library lib;
     private String name;
     private int timeSpend;
 
     public Reader() {};
 
-    public Reader(String name) {
+    public Reader(Library lib, String name) {
+        this.lib = lib;
         this.name = name;
     }
 
@@ -28,5 +33,26 @@ public class Reader {
 
     public int getTimeSpend() {
         return this.timeSpend;
+    }
+
+    @Override
+    public void run() {
+        Book b = lib.checkOut();
+        if (b == null) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            this.setTimeSpend();
+            try {
+                wait(this.getTimeSpend() * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(this.getName() + " read " + b.getName() + " for " + this.getTimeSpend() + " sec.");
+            lib.checkIn(b);
+        }
     }
 }
