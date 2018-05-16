@@ -2,8 +2,8 @@ package tw.m2n.library;
 
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import tw.m2n.library.model.Book;
 
@@ -12,7 +12,7 @@ import tw.m2n.library.model.Book;
  *
  */
 public class Library {
-    private Lock lock = new ReentrantLock();
+    private ReadWriteLock rwl = new ReentrantReadWriteLock();
 
     private Queue<Book> books = new PriorityQueue<Book>();
 
@@ -21,22 +21,31 @@ public class Library {
         books.offer(new Book("2nd episode"));
     }
 
+    public Book hasBook() {
+        rwl.readLock().lock();
+        try {
+            return books.peek();
+        } finally {
+            rwl.readLock().unlock();
+        }
+    }
+
     public Book checkOut() {
-        lock.lock();
+        rwl.writeLock().lock();
         try {
             return books.poll();
         } finally {
-            lock.unlock();
+            rwl.writeLock().unlock();
         }
     }
 
     public void checkIn(Book book) {
-        lock.lock();
+        rwl.writeLock().lock();
         try {
             this.books.offer(book);
             notify();
         } finally {
-            lock.unlock();
+            rwl.writeLock().unlock();
         }
     }
 

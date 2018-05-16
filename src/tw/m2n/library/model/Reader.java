@@ -37,22 +37,26 @@ public class Reader implements Runnable {
 
     @Override
     public void run() {
-        Book b = lib.checkOut();
-        if (b == null) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } else {
-            this.setTimeSpend();
-            try {
-                wait(this.getTimeSpend() * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println(this.getName() + " read " + b.getName() + " for " + this.getTimeSpend() + " sec.");
-            lib.checkIn(b);
+        while (true) {
+            Book b = lib.checkOut();
+            if (b == null) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                this.setTimeSpend();
+                try {
+                    wait(this.getTimeSpend() * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(this.getName() + " read " + b.getName() + " for " + this.getTimeSpend() + " sec.");
+                lib.checkIn(b);
+//            notifyAll();
+                notify();
+        }
         }
     }
 }
