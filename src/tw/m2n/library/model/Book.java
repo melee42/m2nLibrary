@@ -3,7 +3,7 @@ package tw.m2n.library.model;
  * @author moon
  *
  */
-public class Book {
+public class Book implements Comparable<Book> {
 
     private String name;
 
@@ -19,5 +19,10 @@ public class Book {
 
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public int compareTo(Book o) {
+        return this.hashCode() - o.hashCode();
     }
 }

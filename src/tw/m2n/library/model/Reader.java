@@ -10,7 +10,8 @@ public class Reader implements Runnable {
     private String name;
     private int timeSpend;
 
-    public Reader() {};
+    public Reader() {
+    };
 
     public Reader(Library lib, String name) {
         this.lib = lib;
@@ -35,24 +36,19 @@ public class Reader implements Runnable {
 
     @Override
     public void run() {
+        System.out.println(name + " checks out.");
         Book b = lib.checkOut();
-        if (b == null) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } else {
-            this.setTimeSpend();
-            try {
-                wait(this.getTimeSpend() * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println(this.getName() + " read " + b.getName() + " for " + this.getTimeSpend() + " sec.");
-            lib.checkIn(b);
-            // notifyAll();
-            notify();
+        if (b == null)
+            System.out.println(name + " is waiting.");
+        this.setTimeSpend();
+        try {
+            System.out.println(name + " is reading.");
+            Thread.sleep(timeSpend * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        System.out.println(name + " read " + b.getName() + " for " + timeSpend + " sec.");
+        lib.checkIn(b);
+        System.out.println(name + " checked in book " + b.getName());
     }
 }
