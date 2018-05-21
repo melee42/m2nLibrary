@@ -19,5 +19,11 @@ public class RunSystem {
         scheduled.scheduleAtFixedRate(new Reader(lib, "Uno"), 0, 1, TimeUnit.SECONDS);
         scheduled.scheduleAtFixedRate(new Reader(lib, "Two"), 0, 1, TimeUnit.SECONDS);
         scheduled.scheduleAtFixedRate(new Reader(lib, "San"), 0, 1, TimeUnit.SECONDS);
+        
+//        ExecutorService tp = Executors.newFixedThreadPool(3);
+//        
+//        tp.execute(new Reader(lib, "Uno"));
+//        tp.execute(new Reader(lib, "Two"));
+//        tp.execute(new Reader(lib, "San"));
     }
 }
