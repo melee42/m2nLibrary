@@ -1,5 +1,8 @@
 package tw.m2n.library.model;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * @author moon
  *
@@ -9,6 +12,8 @@ public class Reader implements Runnable {
     private Library lib;
     private String name;
     private int timeSpend;
+    private String message = "%s %s spends %d seconds to read %s.";
+    private SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
 
     public Reader() {
     };
@@ -56,7 +61,7 @@ public class Reader implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println(name + " read " + b.getName() + " for " + timeSpend + " sec.");
+        System.out.println(String.format(message, sdf.format(new Date()), name, timeSpend, b.getName()));
         lib.checkIn(b);
         synchronized (lib) {
             lib.notifyAll();
