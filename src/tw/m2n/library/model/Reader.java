@@ -41,31 +41,33 @@ public class Reader implements Runnable {
 
     @Override
     public void run() {
-//        System.out.println(name + " checks out.");
-        Book b = null;
-        synchronized (lib) {
-            while (!lib.hasBook()) {
-//                System.out.println(name + " is waiting.");
-                try {
-                    lib.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        while (true) {
+    //        System.out.println(name + " checks out.");
+            Book b = null;
+            synchronized (lib) {
+                while (!lib.hasBook()) {
+    //                System.out.println(name + " is waiting.");
+                    try {
+                        lib.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+                b = lib.checkOut();
             }
-            b = lib.checkOut();
+            this.setTimeSpend();
+            try {
+    //            System.out.println(name + " is reading.");
+                Thread.sleep(timeSpend * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(String.format(message, sdf.format(new Date()), name, timeSpend, b.getName()));
+            lib.checkIn(b);
+            synchronized (lib) {
+                lib.notifyAll();
+            }
+    //        System.out.println(name + " checked in book " + b.getName());
         }
-        this.setTimeSpend();
-        try {
-//            System.out.println(name + " is reading.");
-            Thread.sleep(timeSpend * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println(String.format(message, sdf.format(new Date()), name, timeSpend, b.getName()));
-        lib.checkIn(b);
-        synchronized (lib) {
-            lib.notifyAll();
-        }
-//        System.out.println(name + " checked in book " + b.getName());
     }
 }
