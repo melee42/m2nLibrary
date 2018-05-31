@@ -42,11 +42,9 @@ public class Reader implements Runnable {
     @Override
     public void run() {
         while (true) {
-    //        System.out.println(name + " checks out.");
             Book b = null;
             synchronized (lib) {
                 while (!lib.hasBook()) {
-    //                System.out.println(name + " is waiting.");
                     try {
                         lib.wait();
                     } catch (InterruptedException e) {
@@ -57,7 +55,6 @@ public class Reader implements Runnable {
             }
             this.setTimeSpend();
             try {
-    //            System.out.println(name + " is reading.");
                 Thread.sleep(timeSpend * 1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -67,7 +64,6 @@ public class Reader implements Runnable {
             synchronized (lib) {
                 lib.notifyAll();
             }
-    //        System.out.println(name + " checked in book " + b.getName());
         }
     }
 }
